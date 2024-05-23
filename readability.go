@@ -33,9 +33,17 @@ func FromDocument(doc *html.Node, pageURL *nurl.URL) (Article, error) {
 	return parser.ParseDocument(doc, pageURL)
 }
 
+type requestWith func(*http.Request)
+
+func WithUserAgent(userAgent string) requestWith {
+	return func(r *http.Request) {
+		r.Header.Set("User-Agent", userAgent)
+	}
+}
+
 // FromURL fetch the web page from specified url then parses the response to find
 // the readable content.
-func FromURL(pageURL string, timeout time.Duration) (Article, error) {
+func FromURL(pageURL string, timeout time.Duration, requestModifiers ...requestWith) (Article, error) {
 	// Make sure URL is valid
 	parsedURL, err := nurl.ParseRequestURI(pageURL)
 	if err != nil {
@@ -44,7 +52,16 @@ func FromURL(pageURL string, timeout time.Duration) (Article, error) {
 
 	// Fetch page from URL
 	client := &http.Client{Timeout: timeout}
-	resp, err := client.Get(pageURL)
+	req, err := http.NewRequest("GET", pageURL, nil)
+	if err != nil {
+		return Article{}, fmt.Errorf("failed to create request: %v", err)
+	}
+
+	for _, modifier := range requestModifiers {
+		modifier(req)
+	}
+
+	resp, err := client.Do(req)
 	if err != nil {
 		return Article{}, fmt.Errorf("failed to fetch the page: %v", err)
 	}
