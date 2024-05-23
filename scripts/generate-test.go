@@ -12,8 +12,8 @@ import (
 	fp "path/filepath"
 	"time"
 
+	readability "github.com/WiseEcho/go-readability"
 	"github.com/go-shiori/dom"
-	readability "github.com/go-shiori/go-readability"
 	"golang.org/x/net/html"
 )
 
