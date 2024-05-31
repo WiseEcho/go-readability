@@ -41,6 +41,14 @@ func WithUserAgent(userAgent string) requestWith {
 	}
 }
 
+func WithHeader(headers map[string]string) requestWith {
+	return func(r *http.Request) {
+		for key, value := range headers {
+			r.Header.Set(key, value)
+		}
+	}
+}
+
 // FromURL fetch the web page from specified url then parses the response to find
 // the readable content.
 func FromURL(pageURL string, timeout time.Duration, requestModifiers ...requestWith) (Article, error) {
