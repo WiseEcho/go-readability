@@ -41,6 +41,7 @@ func WithUserAgent(userAgent string) requestWith {
 	}
 }
 
+// WithHeader 增加header
 func WithHeader(headers map[string]string) requestWith {
 	return func(r *http.Request) {
 		for key, value := range headers {
