@@ -95,6 +95,7 @@ type Article struct {
 	Language      string
 	PublishedTime *time.Time
 	ModifiedTime  *time.Time
+	HttpCode      int
 }
 
 // Parser is the parser that parses the page to get the readable content.

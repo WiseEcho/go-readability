@@ -84,7 +84,13 @@ func FromURL(pageURL string, timeout time.Duration, requestModifiers ...requestW
 
 	// Parse content
 	parser := NewParser()
-	return parser.Parse(resp.Body, parsedURL)
+	article, err := parser.Parse(resp.Body, parsedURL)
+	if err != nil {
+		return Article{}, err
+	}
+
+	article.HttpCode = resp.StatusCode
+	return article, nil
 }
 
 // Check checks whether the input is readable without parsing the whole thing. It's the
